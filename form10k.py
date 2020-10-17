@@ -10,8 +10,9 @@ from bs4 import BeautifulSoup
 from pathos.pools import ProcessPool
 from pathos.helpers import cpu_count
 import requests
+from urllib.parse import urljoin
 
-SEC_GOV_URL = 'http://www.sec.gov/Archives'
+SEC_GOV_URL = 'http://www.sec.gov/Archives/'
 
 class Form10k(object):
     def __init__(self, txt_dir):
@@ -61,7 +62,7 @@ class Form10k(object):
                 reader = csv.reader(fin,delimiter=',',quotechar='\"',quoting=csv.QUOTE_ALL)
                 for row in reader:
                     form_type, company_name, cik, date_filed, filename = row
-                    url = os.path.join(SEC_GOV_URL,filename)
+                    url = urljoin(SEC_GOV_URL,filename)
                     yield url
 
         def download_job(url):
@@ -94,7 +95,8 @@ class Form10k(object):
                     print("{} parsing failed: {}".format(url,e))
 
 
-        ncpus = cpu_count() if cpu_count() <= 8 else 8;
+        ncpus = cpu_count() if cpu_count() <= 8 else 8
+        print('ncpus=' + str(ncpus))
         pool = ProcessPool( ncpus )
         pool.map( download_job,
                     iter_path_generator(index_path) )

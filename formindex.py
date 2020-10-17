@@ -1,11 +1,12 @@
 from collections import namedtuple
 import csv
 import os
+from urllib.parse import urljoin
 
 import requests
 
-SEC_GOV_URL = 'http://www.sec.gov/Archives'
-FORM_INDEX_URL = os.path.join(SEC_GOV_URL,'edgar','full-index','{}','QTR{}','form.idx')
+SEC_GOV_URL = 'http://www.sec.gov/Archives/'
+FORM_INDEX_URL = urljoin(SEC_GOV_URL,'edgar/full-index/{}/QTR{}/form.idx')
 IndexRecord = namedtuple("IndexRecord",["form_type","company_name","cik","date_filed","filename"])
 
 class FormIndex(object):
@@ -58,7 +59,7 @@ class FormIndex(object):
             arrived = False
 
             for row in fin.readlines():
-                row = row.decode('ascii')
+                row = row.decode('UTF-8')
                 if row.startswith("Form Type"):
                     fields_begin = [ row.find("Form Type"),
                                      row.find("Company Name"),
@@ -78,6 +79,6 @@ class FormIndex(object):
         print("Saving records to {}".format(path))
 
         with open(path,'w') as fout:
-            writer = csv.writer(fout,delimiter=',',quotechar='\"',quoting=csv.QUOTE_ALL)
+            writer = csv.writer(fout,delimiter=',',quotechar='\"',quoting=csv.QUOTE_ALL, lineterminator='\n')
             for rec in self.formrecords:
                 writer.writerow( tuple(rec) )

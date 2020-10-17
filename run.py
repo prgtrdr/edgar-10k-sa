@@ -11,8 +11,8 @@ def main():
     #        Arguments        #
     ###########################
     parser = argparse.ArgumentParser("Edgar 10k forms sentiment analysis")
-    parser.add_argument('--year_start',type=int,default=2014)
-    parser.add_argument('--year_end',type=int,default=2016)
+    parser.add_argument('--year_start',type=int,default=2018)
+    parser.add_argument('--year_end',type=int,default=2019)
     parser.add_argument('--index_dir',type=str,default='./index')
     parser.add_argument('--txt_dir',type=str,default='./txt')
     parser.add_argument('--mda_dir',type=str,default='./mda')
